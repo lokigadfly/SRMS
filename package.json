@@ -1,0 +1,29 @@
+{
+  "name": "original_signup",
+  "version": "1.0.0",
+  "description": "\"# original_signup\"",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "captchapng": "0.0.1",
+    "cookie-parser": "^1.4.2",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "mongodb": "^2.1.19",
+    "scribe-js": "^2.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lokigadfly/original_signup"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lokigadfly/original_signup/issues"
+  },
+  "homepage": "https://github.com/lokigadfly/original_signup#readme"
+}
