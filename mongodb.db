@@ -1,0 +1,28 @@
+db.addUser('originalsignup','originalsignup123');
+{  
+    "user" : "originalsignup",  
+    "readOnly" : false,  
+    "pwd" : "wozaizheli",  
+}
+
+
+db.createRole(
+   {
+     role: "originalsignup",
+     privileges: [
+       { resource: { cluster: true }, actions: [ "serverStatus" ] }
+     ],
+     roles: []
+   }
+)
+
+db.changeUserPassword("originalsignup", "wozaizheli")
+
+
+db.createUser( { user: "originalsignup",
+                 pwd: "wozaizheli",
+                 customData: { employeeId: 12345 },
+                 roles: [ { role: "clusterAdmin", db: "admin" },
+                          { role: "readAnyDatabase", db: "admin" },
+                          "readWrite"] },
+               { w: "majority" , wtimeout: 5000 } )
