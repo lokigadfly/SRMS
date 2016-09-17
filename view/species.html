@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>enrolling活动主页</title>
+	<link rel="stylesheet" href="/uikit/css/uikit.almost-flat.min.css" />
+	<script src="/js/jquery.js"></script>
+	<script src="/js/pace.min.js"></script>
+	<script src="/uikit/js/uikit.min.js"></script>
+</head>
+<body>
+<nav class="uk-navbar uk-navbar-attached">
+
+                                <ul class="uk-navbar-nav">
+                                    <li class="uk-active"><a href="">上海科技大学文艺体育部</a></li>
+                                    <li class="uk-parent" data-uk-dropdown>
+                                        <a href="">比赛相关</a>
+
+                                        <div class="uk-dropdown uk-dropdown-navbar">
+                                            <ul class="uk-nav uk-nav-navbar">
+                                                <li><a href="#">比赛公告</a></li>
+                                                <li><a href="#">比赛规则</a></li>
+                                                <li><a href="#">赛程安排</a></li>
+                                                <li><a href="#">工作人员</a></li>
+                                                <li><a href="/enroll">选手报名</a></li>
+                                                <li><a href="#">志愿者报名</a></li>
+                                            </ul>
+                                        </div>
+
+                                    </li>
+                                </ul>
+
+                                <div class="uk-navbar-flip">
+
+                                    <ul class="uk-navbar-nav">
+                                        <li class="uk-parent" data-uk-dropdown>
+                                            <a href="">个人中心</a>
+
+                                            <div class="uk-dropdown uk-dropdown-navbar">
+                                                <ul class="uk-nav uk-nav-navbar">
+                                                    <li class="uk-nav-header">我参加的项目</li>
+                                                    <li class="uk-nav-divider"></li>
+                                                    {{#list}}
+                                                    {{#species}}
+                                                    <li><a href="/choose/{{name}}">{{name}}</a></li>
+                                                    {{/species}}
+                                                    {{/list}}
+                                                    <li class="uk-nav-divider"></li>
+                                                    <li><a href="/">重新选择项目</a></li>
+                                                    <li class="uk-nav-header">管理</li>
+                                                    <li><a href="#">我创建的项目</a></li>
+                                                    <li><a href="/">创建项目</a></li>
+                                                    <li class="uk-nav-divider"></li>
+                                                    <li><a href="#">退出登陆</a></li>
+                                                </ul>
+                                            </div>
+
+                                        </li>
+                                        {{^user}}
+                                        <li><a href="/login">登陆</a></li>
+                                        <li><a href="/signup">注册</a></li>
+                                        {{/user}}
+                                        {{#user}}
+                                        <li><a href="/logout">退出</a></li>
+                                        {{/user}}
+                                    </ul>
+
+                                </div>
+
+                            </nav>
+
+
+
+
+
+<div class="uk-container uk-container-center uk-margin-top">
+		<div class="uk-grid" data-uk-grid-margin>
+			<div class="uk-width-1-1">
+				<div class="uk-panel uk-panel-box">
+				<h1>你已报名参加项目：{{mode}}</h1>
+				{{#list}}
+				<div class="uk-form-row">
+							<label class="uk-form-label" for="name">姓名：</label>
+							
+								{{name}}
+						</div>
+				<div class="uk-form-row">
+							<label class="uk-form-label" for="name">身份：</label>
+							
+								{{dengji}}
+						</div>
+					<div class="uk-form-row">
+							<label class="uk-form-label" for="name">入学年份：</label>
+							
+								{{year}}
+						</div>
+						<div class="uk-form-row">
+							<label class="uk-form-label" for="name">比赛id：</label>
+							
+								{{random}}
+						</div>
+						{{/list}}
+						<div class="uk-form-row">
+							<label class="uk-form-label" for="name">比赛时间：</label>
+							
+								{{matchtime}}
+						</div>
+
+						{{#group_needed}}
+						{{#has_group}}
+						<div class="uk-alert">你已经成功组队了。</div>
+						{{/has_group}}
+						{{^has_group}}
+						
+						<div class="uk-alert">你还没有组队成功，输入自己的比赛id和队友的比赛id，提交后即可完成组队。只有一次输入机会，请确定后输入！</div>
+						<form class="uk-form uk-form-horizontal">
+						<div class="uk-form-row">
+							<label class="uk-form-label" for="number1">队员1比赛id</label>
+							<div class="uk-form-controls">
+								<input type="text" id="number1" name="number1" placeholder="输入队员1项目id" class="uk-form-large"></div>
+						</div>
+						<div class="uk-form-row">
+							<label class="uk-form-label" for="number2">队员2比赛id</label>
+							<div class="uk-form-controls">
+								<input type="text" id="number2" name="number2" placeholder="输入队员2项目id" class="uk-form-large"></div>
+						</div>
+						<div class="uk-form-row">
+							
+							<button class="uk-button uk-width-1-1" onclick="create_team();return false;">提交</button>
+
+						</div>
+					</form>
+						{{/has_group}}
+						{{/group_needed}}
+				
+			</div>
+		</div>
+	</div>
+	</div>
+	<script type="text/javascript">
+		function create_team() {
+		$.ajax({
+			type: "POST",
+			url: '/createteam',
+			data: {
+				species:"{{mode}}",
+				number1: $('#number1').val(),
+				number2: $('#number2').val()
+			},
+			success: function(data) {
+				if (!data['error']) {
+					UIkit.modal.alert("提交成功！", {
+						center: true
+					}).on('hide.uk.modal', function() {
+						location.reload();
+					});
+				} else {
+					UIkit.modal.alert(data['error'], {
+						center: true
+					});
+				}
+			},
+			dataType: 'json'
+		});
+	}
+	</script>
+	</body>
+	</html>

@@ -33,12 +33,19 @@ app.get('/signup', userController.getSignup);
 app.post('/signup',userController.postSignup);
 app.get('/login', userController.getLogin);
 app.post('/login',userController.postLogin);
+app.get('/choose/%E7%94%B7%E5%8D%95',userController.nandan);
+app.get('/choose/%E5%A5%B3%E5%8D%95',userController.nvdan);
+app.get('/choose/%E5%A5%B3%E5%8F%8C',userController.nvshuang);
+app.get('/choose/%E7%94%B7%E5%8F%8C',userController.nanshuang);
+app.get('/choose/%E6%B7%B7%E5%8F%8C',userController.hunshuang);
+
 app.get('/logout',function(req,res){
     req.session.user = null;
-    res.redirect('/');
+    res.redirect('/enroll');
 });
-app.get('/', userController.mainpage);
+app.get('/enroll', userController.mainpage);
 app.post('/enroll_pingpong', userController.enroll_pingpong);
+app.post('/createteam', userController.createteam);
 function sendStaticFile(url) {
 	return function(req, res) {
 		res.render(url, {  });
