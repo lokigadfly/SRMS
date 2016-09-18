@@ -38,9 +38,14 @@ app.get('/choose/%E5%A5%B3%E5%8D%95',userController.nvdan);
 app.get('/choose/%E5%A5%B3%E5%8F%8C',userController.nvshuang);
 app.get('/choose/%E7%94%B7%E5%8F%8C',userController.nanshuang);
 app.get('/choose/%E6%B7%B7%E5%8F%8C',userController.hunshuang);
-
+app.get('/admin',userController.adminmainpage);
+app.get('/scan/*',userController.adminmatch);
 app.get('/logout',function(req,res){
     req.session.user = null;
+    res.redirect('/enroll');
+});
+app.get('/',function(req,res){
+    
     res.redirect('/enroll');
 });
 app.get('/enroll', userController.mainpage);

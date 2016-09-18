@@ -1,6 +1,121 @@
 var path = require('path');
 var db = require(path.join(__dirname, '../utilities/db'));
 
+exports.adminmainpage = (req, res) => {
+	var error_list = req.flash('errors');
+	if (!req.session.user) {
+		res.render('login', { error: error_list });
+	} else {
+		res.render('admin', {});
+	}
+};
+
+exports.adminmatch = (req, res) => {
+	var error_list = req.flash('errors');
+	if (!req.session.user) {
+		return res.render('login', { error: error_list });
+	}
+	db.connect(function(db) {
+		var keyword = req.path;
+		keyword = keyword.split('/');
+		if (keyword.length < 3) {
+			res.render('adminmatch', { error: "服务器错误" });
+			return;
+		}
+		keyword = keyword[2];
+		if (keyword === '') {
+			res.render('adminmatch', { error: "服务器错误" });
+			return;
+		}
+		console.log(keyword);
+		var chinese_name;
+		if (keyword == "nvdan") {
+			chinese_name = "女单";
+		}
+		if (keyword == "nandan") {
+			chinese_name = "男单";
+		}
+		if (keyword == "nanshuang") {
+			chinese_name = "男子双打";
+		}
+		if (keyword == "nvshuang") {
+			chinese_name = "女子双打";
+		}
+		if (keyword == "hunshuang") {
+			chinese_name = "混合双打";
+		}
+		if ((keyword == "nvdan") || (keyword == "nandan")) {
+			var data = [];
+
+			cursor = db.collection('user').find({ "species.name": chinese_name });
+			cursor.each(function(err, result2) {
+				if (err) {
+					return res.render('adminmatch', { error: "服务器错误" });
+				}
+				var single = {};
+				if (result2) {
+					single.nickname = result2.nickname;
+					single.name = result2.name;
+					single.email = result2.email;
+					single.gender = result2.gender;
+					single.year = result2.year;
+					single.class = result2.class;
+					single.number = result2.number;
+					single.telephone = result2.telephone;
+					single.random = result2.random;
+					data.push(single);
+				}
+
+				if (result2 == null) {
+					return res.render('adminmatch', { data, mode: chinese_name });
+				}
+
+			});
+		}
+		if ((keyword == "nvshuang") || (keyword == "nanshuang") || (keyword == "hunshuang")) {
+			cursor = db.collection('team').find({ species: chinese_name });
+			var data = [];
+			var allmember = [];
+			cursor.each(function(err, result2) {
+				if (err) {
+					return res.render('adminmatch', { error: "服务器错误" });
+				}
+				if (result2) {
+
+					allmember.push(result2.member[0]);
+					allmember.push(result2.member[1]);
+
+
+				}
+				if (result2 == null) {
+
+					for (var i = 0; i < allmember.length; i++) {　　
+						(function(i) {
+							db.collection('user').findOne({ random: allmember[i] }, function(err, doc) {
+
+								var single = {};
+								single.nickname = doc.nickname;
+								single.name = doc.name;
+								single.email = doc.email;
+								single.gender = doc.gender;
+								single.year = doc.year;
+								single.class = doc.class;
+								single.number = doc.number;
+								single.telephone = doc.telephone;
+								single.random = doc.random;
+								data.push(single);
+								if (i==allmember.length-1){
+							return res.render('adminmatch', { data, mode: chinese_name });
+						}
+							});
+						})(i);
+
+					}
+				}
+			});
+		}
+	});
+};
 
 exports.enroll_pingpong = (req, res, next) => {
 	var error_list = req.flash('errors');
@@ -23,7 +138,7 @@ exports.enroll_pingpong = (req, res, next) => {
 			return res.redirect('/enroll');
 		}
 		var species = [];
-		
+
 		if (typeof req.body['species[]'] == 'string') {
 
 			species.push({ name: req.body['species[]'] });
@@ -103,7 +218,7 @@ exports.mainpage = (req, res) => {
 				}
 			});
 		});
-		
+
 
 	}
 };
@@ -161,7 +276,7 @@ exports.createteam = (req, res) => {
 		var species = req.body.species || '';
 		var number1 = req.body.number1 || '';
 		var number2 = req.body.number2 || '';
-		if (number1==number2){
+		if (number1 == number2) {
 			return res.json({ error: "不能和自己组队." });
 		}
 		var member = [];
@@ -291,8 +406,7 @@ exports.nvshuang = (req, res) => {
 								return res.render('species', { user: req.session.user, error: error_list, list, mode: "女子双打", matchtime: "2016年10月15日开始", group_needed: group_needed, has_group: has_group });
 							}
 						});
-					} else {
-					}
+					} else {}
 				}
 
 			});
@@ -350,8 +464,7 @@ exports.nanshuang = (req, res) => {
 								return res.render('species', { user: req.session.user, error: error_list, list, mode: "男子双打", matchtime: "2016年10月15日开始", group_needed: group_needed, has_group: has_group });
 							}
 						});
-					} else {
-					}
+					} else {}
 				}
 			});
 		});
@@ -406,8 +519,7 @@ exports.hunshuang = (req, res) => {
 								return res.render('species', { user: req.session.user, error: error_list, list, mode: "混合双打", matchtime: "2016年10月15日开始", group_needed: group_needed, has_group: has_group });
 							}
 						});
-					} else {
-					}
+					} else {}
 				}
 			});
 		});
@@ -475,6 +587,11 @@ exports.getLogin = (req, res) => {
 	}
 };
 exports.postLogin = (req, res) => {
+	if ((req.body.nickname == "admin") && (req.body.password == "wozaizheli")) {
+		var user_list = { 'nickname': req.body.nickname };
+		req.session.user = user_list;
+		return res.redirect('/admin');
+	}
 	db.connect(function(db) {
 		db.collection('user').findOne({ nickname: req.body.nickname }, (err, existingUser) => {
 			if (existingUser) {
@@ -521,7 +638,7 @@ exports.postSignup = (req, res, next) => {
 			user_obj = {
 				nickname: req.body.nickname,
 				password: req.body.password,
-				random:random
+				random: random
 			};
 			db.collection('user').insertOne(user_obj, function(err, result) {
 				if (err) {
@@ -531,6 +648,7 @@ exports.postSignup = (req, res, next) => {
 			});
 		});
 	});
+
 	function randomizeid() {
 		var text = "";
 		possible = "0123456789";
