@@ -39,14 +39,16 @@ app.get('/choose/%E5%A5%B3%E5%8F%8C',userController.nvshuang);
 app.get('/choose/%E7%94%B7%E5%8F%8C',userController.nanshuang);
 app.get('/choose/%E6%B7%B7%E5%8F%8C',userController.hunshuang);
 app.get('/admin',userController.adminmainpage);
+app.get('/files/plan',sendStaticFile('plan.html'));
 app.get('/scan/*',userController.adminmatch);
+app.get('/plan', userController.plan_main);
 app.get('/logout',function(req,res){
     req.session.user = null;
     res.redirect('/enroll');
 });
 app.get('/',function(req,res){
     
-    res.redirect('/enroll');
+    res.redirect('/plan');
 });
 app.get('/enroll', userController.mainpage);
 app.post('/enroll_pingpong', userController.enroll_pingpong);

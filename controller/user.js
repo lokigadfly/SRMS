@@ -27,7 +27,7 @@ exports.adminmatch = (req, res) => {
 			res.render('adminmatch', { error: "服务器错误" });
 			return;
 		}
-		console.log(keyword);
+	
 		var chinese_name;
 		if (keyword == "nvdan") {
 			chinese_name = "女单";
@@ -84,33 +84,32 @@ exports.adminmatch = (req, res) => {
 
 					allmember.push(result2.member[0]);
 					allmember.push(result2.member[1]);
-
-
 				}
 				if (result2 == null) {
-
-					for (var i = 0; i < allmember.length; i++) {　　
-						(function(i) {
-							db.collection('user').findOne({ random: allmember[i] }, function(err, doc) {
-
-								var single = {};
-								single.nickname = doc.nickname;
-								single.name = doc.name;
-								single.email = doc.email;
-								single.gender = doc.gender;
-								single.year = doc.year;
-								single.class = doc.class;
-								single.number = doc.number;
-								single.telephone = doc.telephone;
-								single.random = doc.random;
-								data.push(single);
-								if (i==allmember.length-1){
+					
+					db.collection('user').find({ "random": { $in: allmember } }).toArray(function(err, doc) {
+						if (err) {
 							return res.render('adminmatch', { data, mode: chinese_name });
 						}
-							});
-						})(i);
-
-					}
+						for (let i in doc) {
+							var single = {};
+							single.order = i + 1;
+							single.nickname = doc[i].nickname;
+							single.name = doc[i].name;
+							single.email = doc[i].email;
+							single.gender = doc[i].gender;
+							single.year = doc[i].year;
+							single.class = doc[i].class;
+							single.number = doc[i].number;
+							single.telephone = doc[i].telephone;
+							single.random = doc[i].random;
+							data.push(single);
+						
+						}
+						
+						return res.render('adminmatch', { data, mode: chinese_name });
+						
+					});
 				}
 			});
 		}
@@ -187,6 +186,39 @@ exports.enroll_pingpong = (req, res, next) => {
 	}
 
 
+};
+
+exports.plan_main = (req, res) => {
+	var error_list = req.flash('errors');
+	if (!req.session.user) {
+		res.render('login', { error: error_list });
+	} else {
+		var pingpong_list = [];
+		db.connect(function(db) {
+			db.collection('user').findOne({ nickname: req.session.user['nickname'] }, (err, result) => {
+				if (err) {
+
+					return;
+				} else {
+					var list = {
+						name: result['name'],
+						email: result['email'],
+						number: result['number'],
+						telephone: result['telephone'],
+						gender: result['gender'],
+						dengji: result['class'],
+						year: result['year'],
+						species: result['species'],
+						random: result['random']
+					};
+
+					res.render('plan_main', { user: req.session.user, error: error_list, list });
+				}
+			});
+		});
+
+
+	}
 };
 
 
@@ -411,10 +443,6 @@ exports.nvshuang = (req, res) => {
 
 			});
 		});
-
-
-
-
 	}
 };
 exports.nanshuang = (req, res) => {
