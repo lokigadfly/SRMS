@@ -116,6 +116,33 @@ exports.adminmatch = (req, res) => {
 	});
 };
 
+exports.enroll_volunteer = (req, res, next) => {
+var error_list = req.flash('errors');
+	if (!req.session.user) {
+		res.render('login', { error: error_list });
+	}else {
+
+		db.connect(function(db) {
+			db.collection('user').updateOne({ 'nickname': req.session.user['nickname'] }, {
+				$set: {
+					volunteer:true,
+					volunteer_attachment:req.body.attachment
+				}
+			}, function(err, result) {
+				if (err) {
+
+					return;
+				} else {
+					var errorse = { msg: "提交成功,返回主页" };
+					req.flash('errors', errorse);
+					return res.redirect('/plan');
+
+				}
+			});
+		});
+
+	}
+};
 exports.enroll_pingpong = (req, res, next) => {
 	var error_list = req.flash('errors');
 	if (!req.session.user) {
@@ -191,7 +218,7 @@ exports.enroll_pingpong = (req, res, next) => {
 exports.plan_main = (req, res) => {
 	var error_list = req.flash('errors');
 	if (!req.session.user) {
-		res.render('login', { error: error_list });
+		res.render('plan_main', { user:  null, error: error_list });
 	} else {
 		var pingpong_list = [];
 		db.connect(function(db) {
@@ -213,6 +240,39 @@ exports.plan_main = (req, res) => {
 					};
 
 					res.render('plan_main', { user: req.session.user, error: error_list, list });
+				}
+			});
+		});
+
+
+	}
+};
+exports.volunteer_main = (req, res) => {
+	var error_list = req.flash('errors');
+	if (!req.session.user) {
+		res.render('login', { user:  null, error: error_list });
+	} else {
+		var pingpong_list = [];
+		db.connect(function(db) {
+			db.collection('user').findOne({ nickname: req.session.user['nickname'] }, (err, result) => {
+				if (err) {
+
+					return;
+				} else {
+					var list = {
+						name: result['name'],
+						email: result['email'],
+						number: result['number'],
+						telephone: result['telephone'],
+						gender: result['gender'],
+						dengji: result['class'],
+						year: result['year'],
+						species: result['species'],
+						volunteer:result['volunteer'],
+						random: result['random']
+					};
+
+					res.render('enroll_volunteer', { user: req.session.user, error: error_list, list });
 				}
 			});
 		});
@@ -666,6 +726,7 @@ exports.postSignup = (req, res, next) => {
 			user_obj = {
 				nickname: req.body.nickname,
 				password: req.body.password,
+				volunteer:false,
 				random: random
 			};
 			db.collection('user').insertOne(user_obj, function(err, result) {

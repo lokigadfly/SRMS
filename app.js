@@ -40,6 +40,9 @@ app.get('/choose/%E7%94%B7%E5%8F%8C',userController.nanshuang);
 app.get('/choose/%E6%B7%B7%E5%8F%8C',userController.hunshuang);
 app.get('/admin',userController.adminmainpage);
 app.get('/files/plan',sendStaticFile('plan.html'));
+app.get('/staff',sendStaticFile('staff.html'));
+app.post('/enroll_volunteer',userController.enroll_volunteer);
+app.get('/enroll_volunteer',userController.volunteer_main);
 app.get('/scan/*',userController.adminmatch);
 app.get('/plan', userController.plan_main);
 app.get('/logout',function(req,res){

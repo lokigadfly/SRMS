@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>上海科技大学乒乓球比赛</title>
+	<title>上海科技大学乒乓球比赛 - 报名页面</title>
 	<link rel="stylesheet" href="/uikit/css/uikit.almost-flat.min.css" />
 	<script src="/js/jquery.js"></script>
 	<script src="/js/pace.min.js"></script>
@@ -17,12 +17,12 @@
 
                                         <div class="uk-dropdown uk-dropdown-navbar">
                                             <ul class="uk-nav uk-nav-navbar">
-                                                <li><a href="/plan">比赛公告</a></li>
+                                                 <li><a href="/plan">比赛公告</a></li>
                                                 <li><a href="/plan">比赛规则</a></li>
-                                                <li><a href="#">赛程安排</a></li>
+                                                <li><a href="/timeplan">赛程安排</a></li>
                                                 <li><a href="/staff">工作人员</a></li>
                                                 <li><a href="/enroll">选手报名</a></li>
-                                                <li><a href="/enroll_volunteer">志愿者报名</a></li>
+                                                <li><a href="/enroll_volunteer">志愿者报名</a>
                                             </ul>
                                         </div>
 
@@ -32,8 +32,8 @@
                                 <div class="uk-navbar-flip">
 
                                     <ul class="uk-navbar-nav">
-                                          {{#user}}<li class="uk-parent" data-uk-dropdown>
-                                          <a href="">个人中心</a>
+                                        <li class="uk-parent" data-uk-dropdown>
+                                            <a href="">个人中心</a>
 
                                             <div class="uk-dropdown uk-dropdown-navbar">
                                                 <ul class="uk-nav uk-nav-navbar">
@@ -55,7 +55,6 @@
                                             </div>
 
                                         </li>
-                                        {{/user}}
                                         {{^user}}
                                         <li><a href="/login">登陆</a></li>
                                         <li><a href="/signup">注册</a></li>
@@ -70,14 +69,48 @@
                             </nav>
 
 
-<div class="uk-container uk-container-center uk-margin-top">
-        <div class="uk-grid" data-uk-grid-margin>
-            <div class="uk-width-1-1">
-                <div class="uk-panel uk-panel-box">
-                <iframe src="/files/plan" width="100%" height="1000"></iframe>
-                </div>
-            </div>
-        </div>
-    </div>
-    </body>
-    </html>
+
+
+
+	<div class="uk-container uk-container-center uk-margin-top">
+		<div class="uk-grid" data-uk-grid-margin>
+			<div class="uk-width-1-1">
+				<div class="uk-panel uk-panel-box">
+					<h1>志愿者报名：</h1>
+					<form class="uk-form uk-form-horizontal" action="/enroll_volunteer" method="post">{{#list}}{{^volunteer}}
+						<div class="uk-form-row">
+							<label class="uk-form-label" for="name">备注要求</label>
+							
+								<input type="text" id="attachment" name="attachment" placeholder="备注要求(可以填写时间要求，希望志愿的项目我们会尽量满足)" class="uk-width-1-2">
+						</div>
+						
+						<div class="uk-form-row">
+							
+							<button class="uk-button uk-width-1-1">确认报名志愿者</button>
+
+						</div>
+						{{/volunteer}}
+						{{#volunteer}}
+						<h1>已经报名参加志愿者！</h1>
+
+
+						{{/volunteer}}
+
+						{{/list}}
+					</form>
+				</div>
+
+			</div>
+		</div>
+		<div style="display:none;" id="err_msg">{{succeed}}{{#error}}<p>{{msg}}</p>{{/error}}</div>
+	</div>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		if ($('#err_msg').html() !== '') {
+			UIkit.modal.alert($('#err_msg').html());
+		}
+	});
+
+	</script>
+</body>
+</html>
