@@ -14,7 +14,12 @@ exports.adminmatch = (req, res) => {
 	var error_list = req.flash('errors');
 	if (!req.session.user) {
 		return res.render('login', { error: error_list });
+	}else {
+		if (req.session.user.nickname!='admin'){
+			return res.render('login', { error: error_list });
+		}
 	}
+
 	db.connect(function(db) {
 		var keyword = req.path;
 		keyword = keyword.split('/');
