@@ -77,7 +77,59 @@
 			<div class="uk-width-1-1">
 				<div class="uk-panel uk-panel-box">
 					<h1>志愿者报名：</h1>
+
 					<form class="uk-form uk-form-horizontal" action="/enroll_volunteer" method="post">{{#list}}{{^volunteer}}
+					<div class="uk-form-row">
+							<label class="uk-form-label" for="name">姓名</label>
+							<div class="uk-form-controls">
+								<input type="text" id="name" name="name" placeholder="姓名" class="uk-form-large"></div>
+						</div>
+						<div class="uk-form-row">
+							<label class="uk-form-label" for="email">邮箱</label>
+							<div class="uk-form-controls">
+								<input type="text" id="email" name="email" placeholder="邮箱" class="uk-form-large"></div>
+						</div>
+						<div class="uk-form-row">
+							<label class="uk-form-label" for="number">学号/工号</label>
+							<div class="uk-form-controls">
+								<input type="text" id="number" name="number" placeholder="学号/工号" class="uk-form-large"></div>
+						</div>
+						<div class="uk-form-row">
+							<label class="uk-form-label" for="telephone">手机号</label>
+							<div class="uk-form-controls">
+								<input type="text" id="telephone" name="telephone" placeholder="手机" class="uk-form-large"></div>
+						</div>
+						<div class="uk-form-row">
+							<label class="uk-form-label" for="form-s-s">性别</label>
+							<div class="uk-form-controls">
+								<select id="gender" name="gender">
+									<option>男</option>
+									<option>女</option>
+								</select>
+							</div>
+						</div>
+						<div class="uk-form-row">
+							<label class="uk-form-label" for="form-s-s">入学年级</label>
+							<div class="uk-form-controls">
+								<select id="year" name="year">
+									<option>2013</option>
+									<option>2014</option>
+									<option>2015</option>
+									<option>2016</option>
+								</select>
+							</div>
+						</div>
+						<div class="uk-form-row">
+							<label class="uk-form-label" for="form-s-s">Class</label>
+							<div class="uk-form-controls">
+								<select id="class" name="class">
+									<option>本科生</option>
+									<option>研究生</option>
+									<option>博士生</option>
+									<option>教师、教授、员工</option>
+								</select>
+							</div>
+						</div>
 						<div class="uk-form-row">
 							<label class="uk-form-label" for="name">备注要求</label>
 							

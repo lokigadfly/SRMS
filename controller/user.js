@@ -121,12 +121,31 @@ var error_list = req.flash('errors');
 	if (!req.session.user) {
 		res.render('login', { error: error_list });
 	}else {
-
+		req.assert('name', '姓名不能为空!').notEmpty();
+		req.assert('email', 'Email格式不正确!').isEmail();
+		req.assert('number', '学号工号必须为数字!').isInt();
+		req.assert('number', '学号不能为空!').notEmpty();
+		req.assert('telephone', '手机必须为数字!').isInt();
+		req.assert('telephone', '手机不能为空!').notEmpty();
+		req.assert('telephone', '手机必须为11位').len(11);
+		req.sanitize('email').normalizeEmail({ remove_dots: false });
+		const errors = req.validationErrors();
+		if (errors) {
+			req.flash('errors', errors);
+			return res.redirect('/enroll_volunteer');
+		}
 		db.connect(function(db) {
 			db.collection('user').updateOne({ 'nickname': req.session.user['nickname'] }, {
 				$set: {
 					volunteer:true,
-					volunteer_attachment:req.body.attachment
+					volunteer_attachment:req.body.attachment,
+					name: req.body.name,
+					email: req.body.email,
+					number: req.body.number,
+					telephone: req.body.telephone,
+					gender: req.body.gender,
+					class: req.body.class,
+					year: req.body.year
 				}
 			}, function(err, result) {
 				if (err) {
